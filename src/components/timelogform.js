@@ -32,14 +32,48 @@ export default () => {
     { label: "7 hrs", id: 7 },
     { label: "8 hrs", id: 8 },
   ];
-    
+
   const [value, setValue] = React.useState(
     new Date("2020-09-06T10:00:50.372Z")
   );
 
-  const [taskInputField, setTaskInputField] = React.useState();
+  const [taskInputFields, setTaskInputField] = React.useState([
+    {
+      taskDetails: "",
+      taskTime: []
+    },
+  ]);
 
-  const [valueSelect, setValueSelect] = React.useState([]);
+  const handleAddFields = () => {
+    setTaskInputField([...taskInputFields, { taskDetails: "", taskTime: [] }]);
+  };
+
+  const handleChangeInput = (index, event) => {
+    if (event.target) {
+      console.log('event target', event.target);
+      const values = [...taskInputFields];
+      values[index][event.target.name] = event.target.value;
+      setTaskInputField(values);
+    }
+    else {
+      console.log("no event target", index, event);
+      const values = [...taskInputFields];
+      taskInputFields[index].taskTime = event.value;
+      setTaskInputField(values);
+    }
+    
+  };
+
+  function testsaadnoor(wtf, sad) {
+    console.log('saadnoor', wtf, sad);
+  }
+
+  // const [taskTime, setTaskTime] = React.useState([]);
+  // const [taskTime2, setTaskTime2] = React.useState([]);
+  // const [taskTime3, setTaskTime3] = React.useState([]);
+  // const [taskDetails, setTaskDetails] = React.useState("Daily Standup");
+  // const [taskDetails2, setTaskDetails2] = React.useState("Daily Standup2");
+  // const [taskDetails3, setTaskDetails3] = React.useState("Daily Standup3");
 
   return (
     <div>
@@ -99,8 +133,7 @@ export default () => {
         >
           <Button
             onClick={() => {
-              alert("click");
-              console.log(valueSelect);
+              handleAddFields();
             }}
             size={SIZE.compact}
             shape={SHAPE.default}
@@ -109,39 +142,76 @@ export default () => {
                 style: {
                   width: "50%",
                   float: "right",
-                  marginTop: "30px",
+                  marginTop: "25px",
                 },
               },
             }}
           >
             Add Task
           </Button>
-          <FormControl label="Task Duration" caption="Textarea caption">
-            <Select
-              creatable
-              className={css({
-                paddingRight: "20px",
-              })}
-              overrides={{
-                Root: {
-                  style: {
-                    width: "150px",
-                  },
-                },
-              }}
-              options={options}
-              value={valueSelect}
-              width="10px"
-              onChange={(params) => setValueSelect(params.value)}
-            />
-          </FormControl>
-          <FormControl label="Task description">
-            <Input
-              value={""}
-              onChange={(e) => setValue(e.target.value)}
-              clearOnEscape
-            />
-          </FormControl>
+          <div>
+            {taskInputFields?.map((taskInputField, index) => {
+              console.log(taskInputField);
+              return (
+                <div key={index}>
+                  <FormControl label="Task Duration" caption="Textarea caption">
+                    <Select
+                      creatable
+                      overrides={{
+                        Root: {
+                          style: {
+                            width: "150px",
+                          },
+                        },
+                      }}
+                      size={SIZE.compact}
+                      options={options}
+                      value={taskInputField.taskTime}
+                      width="10px"
+                      name="taskTime"
+                      onChange={(params) => handleChangeInput(index, params)}
+                    />
+                  </FormControl>
+                  <FormControl label="Task description">
+                    <Input
+                      value={taskInputField.taskDetails}
+                      name="taskDetails"
+                      onChange={(event) => handleChangeInput(index, event)}
+                      clearOnEscape
+                    />
+                  </FormControl>
+                </div>
+              );
+            })}
+            {/* {arr.forEach((item, index) => (
+              <div key={index}>
+                <FormControl label="Task Duration" caption="Textarea caption">
+                  <Select
+                    creatable
+                    overrides={{
+                      Root: {
+                        style: {
+                          width: "150px",
+                        },
+                      },
+                    }}
+                    size={SIZE.compact}
+                    options={options}
+                    value={taskTime}
+                    width="10px"
+                    onChange={(params) => setTaskTime(params.value)}
+                  />
+                </FormControl>
+                <FormControl label="Task description">
+                  <Input
+                    value={taskDetails}
+                    onChange={(e) => setTaskDetails(e.target.value)}
+                    clearOnEscape
+                  />
+                </FormControl>
+              </div>
+            ))} */}
+          </div>
         </Card>
       </MainItem>
       <Button
