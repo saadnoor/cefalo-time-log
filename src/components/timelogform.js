@@ -4,12 +4,13 @@ import logo from "../assets/wfh_9.svg";
 import { Textarea } from "baseui/textarea";
 import { Select } from "baseui/select";
 import { styled } from "styletron-react";
-
+import moment from "moment";
 import { Card, StyledBody, StyledAction } from "baseui/card";
-import { Button, SIZE, SHAPE } from "baseui/button";
+import { Button, SIZE, SHAPE, KIND } from "baseui/button";
 import { FormControl } from "baseui/form-control";
 import { Input } from "baseui/input";
 import { TimePicker } from "baseui/timepicker";
+import Delete from "baseui/icon/delete";
 
 const MainItem = styled("div", {
   display: "flex",
@@ -20,9 +21,16 @@ const MainItem = styled("div", {
   },
 });
 
+const ButtonWrap = styled("div", {
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
+});
+
 export default () => {
   const [css] = useStyletron();
   const options = [
+    { label: "30 min", id: 0 },
     { label: "1 hr", id: 1 },
     { label: "2 hrs", id: 2 },
     { label: "3 hrs", id: 3 },
@@ -30,17 +38,26 @@ export default () => {
     { label: "5 hrs", id: 5 },
     { label: "6 hrs", id: 6 },
     { label: "7 hrs", id: 7 },
-    { label: "8 hrs", id: 8 },
   ];
 
-  const [value, setValue] = React.useState(
-    new Date("2020-09-06T10:00:50.372Z")
+  const [signInTime, setSignInTime] = React.useState(
+    new Date("2011-10-10T10:00:00")
+  );
+
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const [signOutTime, setSignOutTime] = React.useState(
+    new Date("2011-10-10T19:00:00")
   );
 
   const [taskInputFields, setTaskInputField] = React.useState([
     {
-      taskDetails: "",
-      taskTime: []
+      taskDetails: "Daily Standup Meeting (Local)",
+      taskTime: [{ label: "1 hr", id: 1 }],
+    },
+    {
+      taskDetails: "Daily Standup Meeting (International)",
+      taskTime: [{ label: "30 min", id: 0 }],
     },
   ]);
 
@@ -48,32 +65,36 @@ export default () => {
     setTaskInputField([...taskInputFields, { taskDetails: "", taskTime: [] }]);
   };
 
+  function handleRemoveFields(index) {
+    const values = [...taskInputFields];
+    values.splice(index, 1);
+    setTaskInputField(values);
+  }
+
   const handleChangeInput = (index, event) => {
     if (event.target) {
-      console.log('event target', event.target);
+      console.log("event target", event.target);
       const values = [...taskInputFields];
       values[index][event.target.name] = event.target.value;
+      console.log(values);
       setTaskInputField(values);
-    }
-    else {
+    } else {
       console.log("no event target", index, event);
       const values = [...taskInputFields];
       taskInputFields[index].taskTime = event.value;
       setTaskInputField(values);
     }
-    
   };
 
-  function testsaadnoor(wtf, sad) {
-    console.log('saadnoor', wtf, sad);
-  }
+  function submitForm() {
+    console.log(
+      signInTime.toLocaleTimeString("en-US"),
+      signOutTime.toLocaleTimeString("en-US"),
+      taskInputFields
+    );
 
-  // const [taskTime, setTaskTime] = React.useState([]);
-  // const [taskTime2, setTaskTime2] = React.useState([]);
-  // const [taskTime3, setTaskTime3] = React.useState([]);
-  // const [taskDetails, setTaskDetails] = React.useState("Daily Standup");
-  // const [taskDetails2, setTaskDetails2] = React.useState("Daily Standup2");
-  // const [taskDetails3, setTaskDetails3] = React.useState("Daily Standup3");
+    setTimeout(() => setIsLoading(false), 3000);
+  }
 
   return (
     <div>
@@ -85,24 +106,19 @@ export default () => {
               style: {
                 maxWidth: "500px",
                 minWidth: "400px",
+                maxHeight: "630px",
               },
             },
           }}
         >
-          {/* <img src={logo} height="400" alt="Logo" /> */}
-          {/* <StyledBody>
-        Proin ut dui sed metus pharetra hend rerit vel non mi. Nulla ornare
-        faucibus ex, non facilisis nisl. Proin ut dui sed metus pharetra hend
-        rerit vel non mi. Nulla ornare faucibus ex, non facilisis nisl.
-      </StyledBody> */}
-
           <FormControl
             label={() => "Start Time"}
             caption={() => "time when you loggin in. eg: 10 am"}
           >
             <TimePicker
-              value={value}
-              onChange={(date) => setValue(date)}
+              value={signInTime}
+              name="startTime"
+              onChange={(date) => setSignInTime(date)}
               creatable
             />
           </FormControl>
@@ -112,51 +128,71 @@ export default () => {
             caption={() => "time when you loggin out. eg: 7 am"}
           >
             <TimePicker
-              value={"7 pm"}
-              onChange={(date) => setValue(date)}
+              value={signOutTime}
+              name="endTime"
+              onChange={(date) => setSignOutTime(date)}
               creatable
             />
           </FormControl>
-
-          <StyledAction></StyledAction>
+          <img src={logo} height="300" alt="Logo" />
         </Card>
         <Card
           title="Task Related Information"
           overrides={{
             Root: {
               style: {
-                maxWidth: "500px",
+                overflow: "auto",
+                maxWidth: "490px",
                 minWidth: "400px",
+                maxHeight: "630px",
               },
             },
           }}
         >
-          <Button
-            onClick={() => {
-              handleAddFields();
-            }}
-            size={SIZE.compact}
-            shape={SHAPE.default}
-            overrides={{
-              BaseButton: {
-                style: {
-                  width: "50%",
-                  float: "right",
-                  marginTop: "25px",
-                },
-              },
-            }}
-          >
-            Add Task
-          </Button>
           <div>
             {taskInputFields?.map((taskInputField, index) => {
               console.log(taskInputField);
               return (
                 <div key={index}>
+                  {index === taskInputFields.length - 1 ? (
+                    <Button
+                      onClick={() => {
+                        handleAddFields();
+                      }}
+                      size={SIZE.compact}
+                      shape={SHAPE.default}
+                      overrides={{
+                        BaseButton: {
+                          style: {
+                            width: "50%",
+                            float: "right",
+                            marginTop: "23px",
+                          },
+                        },
+                      }}
+                    >
+                      Create Another Task
+                    </Button>
+                  ) : (
+                    <Button
+                      shape={SHAPE.circle}
+                      kind={KIND.minimal}
+                      overrides={{
+                        BaseButton: {
+                          style: {
+                            float: "right",
+                          },
+                        },
+                      }}
+                      onClick={() => handleRemoveFields(index)}
+                    >
+                      <Delete />
+                    </Button>
+                  )}
                   <FormControl label="Task Duration" caption="Textarea caption">
                     <Select
                       creatable
+                      autoFocus
                       overrides={{
                         Root: {
                           style: {
@@ -172,8 +208,9 @@ export default () => {
                       onChange={(params) => handleChangeInput(index, params)}
                     />
                   </FormControl>
+
                   <FormControl label="Task description">
-                    <Input
+                    <Textarea
                       value={taskInputField.taskDetails}
                       name="taskDetails"
                       onChange={(event) => handleChangeInput(index, event)}
@@ -183,43 +220,20 @@ export default () => {
                 </div>
               );
             })}
-            {/* {arr.forEach((item, index) => (
-              <div key={index}>
-                <FormControl label="Task Duration" caption="Textarea caption">
-                  <Select
-                    creatable
-                    overrides={{
-                      Root: {
-                        style: {
-                          width: "150px",
-                        },
-                      },
-                    }}
-                    size={SIZE.compact}
-                    options={options}
-                    value={taskTime}
-                    width="10px"
-                    onChange={(params) => setTaskTime(params.value)}
-                  />
-                </FormControl>
-                <FormControl label="Task description">
-                  <Input
-                    value={taskDetails}
-                    onChange={(e) => setTaskDetails(e.target.value)}
-                    clearOnEscape
-                  />
-                </FormControl>
-              </div>
-            ))} */}
           </div>
         </Card>
       </MainItem>
       <Button
+        isLoading={isLoading}
         overrides={{
           BaseButton: { style: { width: "100%" } },
         }}
+        onClick={() => {
+          setIsLoading(true);
+          submitForm();
+        }}
       >
-        Submit
+        Submit Information
       </Button>
     </div>
   );
