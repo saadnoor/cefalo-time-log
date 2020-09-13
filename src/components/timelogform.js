@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useStyletron } from "baseui";
 import logo from "../assets/wfh_9.svg";
 import { Textarea } from "baseui/textarea";
 import { Select } from "baseui/select";
