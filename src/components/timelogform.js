@@ -8,6 +8,7 @@ import { Button, SIZE, SHAPE, KIND } from "baseui/button";
 import { FormControl } from "baseui/form-control";
 import { TimePicker } from "baseui/timepicker";
 import Delete from "baseui/icon/delete";
+const axios = require('axios');
 
 const MainItem = styled("div", {
   display: "flex",
@@ -76,22 +77,18 @@ export default () => {
     }
   };
 
-  function submitForm() {
-    console.log(
-      signInTime.setFullYear(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate()
-      ),
-      signOutTime.setFullYear(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        new Date().getDate()
-      ),
-      taskInputFields
-    );
+  async function submitForm() {
+    await axios({
+      method: "post",
+      url: "https://ff-time-log.azurewebsites.net/api/writeToGoogleSheet",
+      data: {
+        startTime: signInTime.toISOString(),
+        endTime: signOutTime.toISOString(),
+        tasks: [],
+      },
+    }); 
 
-    setTimeout(() => setIsLoading(false), 3000);
+    setIsLoading(false);
   }
 
   return (
