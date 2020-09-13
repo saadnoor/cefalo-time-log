@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './assets/gamer-monochrome.svg';
 import './App.css';
 import { useStyletron } from 'baseui';
 import Navbar from './components/navbar';
@@ -7,14 +6,13 @@ import TimeLogForm from './components/timelogform'
 import { styled } from "styletron-react";
 
 
-import { Button } from "baseui/button";
 const TimeLog = styled("div", {
   maxHeight: "800px",
   overflow: "auto"
 });
 
 function App() {
-  const [css, theme] = useStyletron();
+  const [css] = useStyletron();
   return (
     <React.Fragment>
       <div

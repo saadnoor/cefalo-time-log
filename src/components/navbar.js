@@ -4,10 +4,9 @@ import { StyledLink } from "baseui/link";
 import { Layer } from "baseui/layer";
 
 import {
-  Overflow as UserIcon,
   Alert as Icon,
 } from "baseui/icon";
-import { Unstable_AppNavBar as AppNavBar, POSITION } from "baseui/app-nav-bar";
+import { Unstable_AppNavBar as AppNavBar } from "baseui/app-nav-bar";
 
 function renderItem(item) {
   return item.label;

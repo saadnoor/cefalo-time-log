@@ -4,11 +4,9 @@ import logo from "../assets/wfh_9.svg";
 import { Textarea } from "baseui/textarea";
 import { Select } from "baseui/select";
 import { styled } from "styletron-react";
-import moment from "moment";
-import { Card, StyledBody, StyledAction } from "baseui/card";
+import { Card } from "baseui/card";
 import { Button, SIZE, SHAPE, KIND } from "baseui/button";
 import { FormControl } from "baseui/form-control";
-import { Input } from "baseui/input";
 import { TimePicker } from "baseui/timepicker";
 import Delete from "baseui/icon/delete";
 
@@ -21,14 +19,7 @@ const MainItem = styled("div", {
   },
 });
 
-const ButtonWrap = styled("div", {
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "space-between",
-});
-
 export default () => {
-  const [css] = useStyletron();
   const options = [
     { label: "30 min", id: 0 },
     { label: "1 hr", id: 1 },
@@ -88,8 +79,16 @@ export default () => {
 
   function submitForm() {
     console.log(
-      signInTime.toLocaleTimeString("en-US"),
-      signOutTime.toLocaleTimeString("en-US"),
+      signInTime.setFullYear(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        new Date().getDate()
+      ),
+      signOutTime.setFullYear(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        new Date().getDate()
+      ),
       taskInputFields
     );
 
